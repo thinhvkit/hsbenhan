@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>498573691482-l55h8a5f8o90iph4tp1ha4ntji5ehviq.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.498573691482-l55h8a5f8o90iph4tp1ha4ntji5ehviq</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCje08VTi57IVsizn48ZzJQhafsqMmv5mU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>498573691482</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.tv.hsbenhan</string>
+	<key>PROJECT_ID</key>
+	<string>avian-principle-724</string>
+	<key>STORAGE_BUCKET</key>
+	<string>avian-principle-724.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:498573691482:ios:7e44f4e15537162b4b6663</string>
+	<key>DATABASE_URL</key>
+	<string>https://avian-principle-724.firebaseio.com</string>
+</dict>
+</plist>
