@@ -11,6 +11,7 @@ import {
 import _ from 'lodash';
 import {View, Button} from 'react-native-ui-lib';
 import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import {selectPhotoTapped} from '../src/util/helpers';
@@ -78,35 +79,34 @@ const CaptureImagesView = (props) => {
     );
   };
 
-  const listFilesAndDirectories = (reference, pageToken) => {
-    return reference.list({pageToken}).then((result) => {
-      // Loop over each item
-      result.items.forEach((ref) => {
-        console.log(ref.fullPath);
-      });
-
-      if (result.nextPageToken) {
-        return listFilesAndDirectories(result.nextPageToken);
-      }
-
-      return Promise.resolve();
-    });
-  };
-
-  const onPushImage = () => {
+  const onPushImage = async () => {
     if (_.isEmpty(images)) {
       return;
     }
+
     images.map((i) => {
       const reference = storage().ref(`/${item}/${i.name}`);
       const pathToFile = i.uri;
       const task = reference.putFile(pathToFile);
       task.on('state_changed', (taskSnapshot) => {
-        console.log(`${taskSnapshot}`);
+        console.log(taskSnapshot);
       });
 
-      task.then(() => {
-        console.log('Image uploaded to the bucket!');
+      task.then((taskSnapshot) => {
+        console.log('Image uploaded to the bucket!', taskSnapshot);
+        storage()
+          .ref(taskSnapshot.metadata.fullPath)
+          .getDownloadURL()
+          .then((url) => {
+            firestore()
+              .collection(item)
+              .add({
+                uri: url,
+              })
+              .then(() => {
+                console.log('User added!');
+              });
+          });
       });
     });
     hideDialog();

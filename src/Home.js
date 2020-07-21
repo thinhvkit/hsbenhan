@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet, FlatList, Image, PixelRatio} from 'react-native';
+import {StyleSheet, FlatList, PixelRatio, Image} from 'react-native';
 import _ from 'lodash';
 import {View, TextField, Button, TouchableOpacity} from 'react-native-ui-lib';
-import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 import ImageViewing from 'react-native-image-viewing';
 import colors from '../src/util/colors';
 import CaptureImageView from '../src/CaptureImages';
@@ -13,13 +13,12 @@ const Home = (props) => {
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isViewing, setIsViewing] = useState(false);
+  const [currentImageIndex, setImageIndex] = useState(0);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
     return (
-      <TouchableOpacity
-        style={styles.imageContainer}
-        onPress={openImageViewing}>
-        <Image style={{width: 200, height: 200}} source={item} />
+      <TouchableOpacity flex paddingH-4 onPress={() => openImageViewing(index)}>
+        <Image source={item} style={{resizeMode: 'cover', height: 250}} />
       </TouchableOpacity>
     );
   };
@@ -30,45 +29,34 @@ const Home = (props) => {
     }
   };
 
-  const listFilesAndDirectories = (reference, pageToken) => {
-    return reference.list({pageToken}).then((result) => {
-      const uris = [];
-      result.items.forEach(async (ref) => {
-        console.log(ref.fullPath);
-        const uri = await storage().ref(ref.fullPath).getDownloadURL();
-        uris.push({uri});
-      });
-      setData(uris);
-
-      if (result.nextPageToken) {
-        return listFilesAndDirectories(result.nextPageToken);
-      }
-
-      return Promise.resolve();
-    });
-  };
-
   const onChangeSearchText = (text) => {
     setSearchText(text);
   };
 
-  const onSearch = () => {
+  const onSearch = async () => {
     if (searchText.length >= 4) {
       setIsLoading(true);
-      const reference = storage().ref(searchText);
-      listFilesAndDirectories(reference).then(() => {
-        console.log('Finished listing');
-        setIsLoading(false);
+      setData([]);
+      const list = [];
+      const user = await firestore().collection(searchText).get();
+      console.log(user.size);
+      user.forEach((documentSnapshot) => {
+        list.push(documentSnapshot.data());
       });
+      setData(list);
+      setIsLoading(false);
     }
   };
 
-  const openImageViewing = () => {
+  const openImageViewing = (index) => {
     if (_.isEmpty(data)) {
       return;
     }
+    setImageIndex(index);
     setIsViewing(true);
   };
+
+  const onRequestClose = () => setIsViewing(false);
 
   return (
     <View>
@@ -122,6 +110,8 @@ const Home = (props) => {
 
       <View>
         <FlatList
+          row
+          numColumns={2}
           data={data}
           keyExtractor={(item, index) => `${index}`}
           renderItem={renderItem}
@@ -137,10 +127,11 @@ const Home = (props) => {
       />
       <ImageViewing
         images={data}
-        imageIndex={0}
+        imageIndex={currentImageIndex}
+        presentationStyle="overFullScreen"
         visible={isViewing}
         backgroundColor="#fff"
-        onRequestClose={() => setIsViewing(false)}
+        onRequestClose={onRequestClose}
       />
     </View>
   );
