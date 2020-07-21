@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "498573691482",
+    "firebase_url": "https://avian-principle-724.firebaseio.com",
+    "project_id": "avian-principle-724",
+    "storage_bucket": "avian-principle-724.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498573691482:android:9dc6c02bed2a72984b6663",
+        "android_client_info": {
+          "package_name": "com.tvunlimited.hsbenhan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498573691482-shp5oudjsikihhbf1kepguu5i90omvfk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tvunlimited.hsbenhan",
+            "certificate_hash": "bc6969722e86a4dacda0a2d6fdfa7864dc74b30f"
+          }
+        },
+        {
+          "client_id": "498573691482-1ki3i20fe8avp8jjsnbve6gh6guojrdu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tvunlimited.hsbenhan",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "498573691482-18b4lko8etq020liuqlai5qc9dhrci9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKVw45R2c47dlQ9_pxsEj8o1Q0U3Jfck0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498573691482-18b4lko8etq020liuqlai5qc9dhrci9b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "498573691482-l55h8a5f8o90iph4tp1ha4ntji5ehviq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tv.hsbenhan"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
