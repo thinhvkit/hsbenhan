@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>498573691482-l55h8a5f8o90iph4tp1ha4ntji5ehviq.apps.googleusercontent.com</string>
+	<string>498573691482-89tj1bllobqr4m8mnhkehi327bf6e04f.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.498573691482-l55h8a5f8o90iph4tp1ha4ntji5ehviq</string>
+	<string>com.googleusercontent.apps.498573691482-89tj1bllobqr4m8mnhkehi327bf6e04f</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>498573691482-shp5oudjsikihhbf1kepguu5i90omvfk.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCje08VTi57IVsizn48ZzJQhafsqMmv5mU</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.tv.hsbenhan</string>
+	<string>com.tvunlimited.hsbenhan</string>
 	<key>PROJECT_ID</key>
 	<string>avian-principle-724</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:498573691482:ios:7e44f4e15537162b4b6663</string>
+	<string>1:498573691482:ios:6d0f9999883beffe4b6663</string>
 	<key>DATABASE_URL</key>
 	<string>https://avian-principle-724.firebaseio.com</string>
 </dict>

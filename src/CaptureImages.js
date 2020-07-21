@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import _ from 'lodash';
-import {View, Button} from 'react-native-ui-lib';
+import {View, Button, TextField} from 'react-native-ui-lib';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
@@ -20,8 +20,14 @@ import colors from '../src/util/colors';
 import common from '../src/util/common';
 
 const CaptureImagesView = (props) => {
-  const {visible, hideDialog, item} = props;
+  const {visible, hideDialog} = props;
   const [images, setImages] = useState();
+  const [code, setCode] = useState('');
+  const [errCode, setErrCode] = useState();
+  const [fullName, setFullName] = useState('');
+  const [errFullName, setErrFullName] = useState();
+  const [birthday, setBirthday] = useState('');
+  const [errBirthday, setErrBirthday] = useState();
 
   let flatList = React.createRef();
 
@@ -79,13 +85,34 @@ const CaptureImagesView = (props) => {
     );
   };
 
+  const onChangeCodeText = (text) => {
+    setCode(text);
+    setErrCode(code ? undefined : 'Bắt buộc nhập');
+  };
+  const onChangeFullNameText = (text) => {
+    setFullName(text);
+    setErrFullName(fullName ? undefined : 'Bắt buộc nhập');
+  };
+  const onChangeBirthdayText = (text) => {
+    setBirthday(text);
+    setErrBirthday(birthday ? undefined : 'Bắt buộc nhập');
+  };
+
+  const validate = () => {
+    return (
+      _.isEmpty(images) ||
+      _.isEmpty(code) ||
+      _.isEmpty(fullName) ||
+      _.isEmpty(birthday)
+    );
+  };
   const onPushImage = async () => {
-    if (_.isEmpty(images)) {
+    if (validate()) {
       return;
     }
 
     images.map((i) => {
-      const reference = storage().ref(`/${item}/${i.name}`);
+      const reference = storage().ref(`/${code}/${i.name}`);
       const pathToFile = i.uri;
       const task = reference.putFile(pathToFile);
       task.on('state_changed', (taskSnapshot) => {
@@ -99,8 +126,11 @@ const CaptureImagesView = (props) => {
           .getDownloadURL()
           .then((url) => {
             firestore()
-              .collection(item)
+              .collection('Users')
               .add({
+                code: code,
+                fullName: fullName,
+                birthday: birthday,
                 uri: url,
               })
               .then(() => {
@@ -122,7 +152,51 @@ const CaptureImagesView = (props) => {
       isVisible={visible}
       onModalHide={onModalHide}
       backdropOpacity={0.3}>
-      <View useSafeArea style={styles.container}>
+      <View style={styles.container}>
+        <View row spread marginB-10 marginT-30>
+          <TextField
+            containerStyle={{flex: 1}}
+            key={'code'}
+            placeholder={'Mã'}
+            underlineColor={{
+              focus: colors.primary,
+              error: colors.yellow,
+            }}
+            centered
+            multiline={false}
+            onChangeText={onChangeCodeText}
+            error={errCode}
+            useTopErrors
+          />
+          <TextField
+            containerStyle={{flex: 1, paddingHorizontal: 4}}
+            key={'fullname'}
+            placeholder={'Họ Tên'}
+            underlineColor={{
+              focus: colors.primary,
+              error: colors.yellow,
+            }}
+            centered
+            multiline={false}
+            onChangeText={onChangeFullNameText}
+            error={errFullName}
+            useTopErrors
+          />
+          <TextField
+            containerStyle={{flex: 1}}
+            key={'birthday'}
+            placeholder={'Ngày sinh'}
+            underlineColor={{
+              focus: colors.primary,
+              error: colors.yellow,
+            }}
+            centered
+            multiline={false}
+            onChangeText={onChangeBirthdayText}
+            error={errBirthday}
+            useTopErrors
+          />
+        </View>
         <FlatList
           data={images || []}
           keyExtractor={(item, index) => `${index}`}
@@ -149,7 +223,7 @@ const CaptureImagesView = (props) => {
           />
         </View>
         <Button
-          style={{position: 'absolute', top: 0, right: 0}}
+          style={{position: 'absolute', top: -30, right: 0}}
           backgroundColor="#ffffff"
           orange10
           marginH-5

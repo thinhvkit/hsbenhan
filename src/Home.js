@@ -24,9 +24,7 @@ const Home = (props) => {
   };
 
   const onShowCaptureImage = () => {
-    if (searchText.length >= 4) {
-      setShowCaptureImage(true);
-    }
+    setShowCaptureImage(true);
   };
 
   const onChangeSearchText = (text) => {
@@ -34,11 +32,14 @@ const Home = (props) => {
   };
 
   const onSearch = async () => {
-    if (searchText.length >= 4) {
+    if (searchText.length > 0) {
       setIsLoading(true);
       setData([]);
       const list = [];
-      const user = await firestore().collection(searchText).get();
+      const user = await firestore()
+        .collection('Users')
+        .where('code', '==', searchText)
+        .get();
       console.log(user.size);
       user.forEach((documentSnapshot) => {
         list.push(documentSnapshot.data());
@@ -122,7 +123,6 @@ const Home = (props) => {
 
       <CaptureImageView
         visible={showCaptureImage}
-        item={searchText}
         hideDialog={() => setShowCaptureImage(false)}
       />
       <ImageViewing
