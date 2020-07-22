@@ -1,7 +1,18 @@
 import React, {useState} from 'react';
-import {StyleSheet, FlatList, PixelRatio, Image} from 'react-native';
+import {
+  StyleSheet,
+  FlatList,
+  PixelRatio,
+  ActivityIndicator,
+} from 'react-native';
 import _ from 'lodash';
-import {View, TextField, Button, TouchableOpacity} from 'react-native-ui-lib';
+import {
+  View,
+  TextField,
+  Button,
+  TouchableOpacity,
+  AnimatedImage,
+} from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
 import ImageViewing from 'react-native-image-viewing';
 import colors from '../src/util/colors';
@@ -18,7 +29,14 @@ const Home = (props) => {
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity flex paddingH-4 onPress={() => openImageViewing(index)}>
-        <Image source={item} style={{resizeMode: 'cover', height: 250}} />
+        <AnimatedImage
+          containerStyle={{backgroundColor: colors.bluish, marginBottom: 10}}
+          style={{resizeMode: 'cover', height: 250}}
+          source={item}
+          loader={<ActivityIndicator />}
+          key={index}
+          animationDuration={index === 0 ? 300 : 800}
+        />
       </TouchableOpacity>
     );
   };
@@ -38,7 +56,7 @@ const Home = (props) => {
       const list = [];
       const user = await firestore()
         .collection('Users')
-        .where('code', '==', searchText)
+        .where('code', 'array-contains', searchText)
         .get();
       console.log(user.size);
       user.forEach((documentSnapshot) => {
@@ -61,6 +79,13 @@ const Home = (props) => {
 
   return (
     <View>
+      {isLoading && (
+        <ActivityIndicator
+          style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}
+          size="large"
+          color={colors.primary}
+        />
+      )}
       <View centerV paddingH-10 paddingV-10 marginB-10>
         <TextField
           key={'centered'}

@@ -2,7 +2,7 @@ import ImagePicker from 'react-native-image-picker';
 
 export const selectPhotoTapped = (callback, onlyTake = false) => {
   const options = {
-    quality: 0.9,
+    quality: 0.6,
     tintColor: 'black',
     title: 'Chọn hình ảnh',
     takePhotoButtonTitle: 'Chụp ảnh',
