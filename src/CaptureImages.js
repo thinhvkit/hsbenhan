@@ -22,14 +22,12 @@ import common from '../src/util/common';
 const CaptureImagesView = (props) => {
   const {visible, hideDialog} = props;
   const [images, setImages] = useState();
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState();
   const [errCode, setErrCode] = useState();
-  const [fullName, setFullName] = useState('');
+  const [fullName, setFullName] = useState();
   const [errFullName, setErrFullName] = useState();
-  const [birthday, setBirthday] = useState('');
-  const [errBirthday, setErrBirthday] = useState();
 
-  let flatList = React.createRef();
+  const flatList = React.createRef();
 
   const callback = (response) => {
     if (response.didCancel) {
@@ -86,25 +84,16 @@ const CaptureImagesView = (props) => {
   };
 
   const onChangeCodeText = (text) => {
+    setErrCode(text ? undefined : 'Bắt buộc nhập');
     setCode(text);
-    setErrCode(code ? undefined : 'Bắt buộc nhập');
   };
   const onChangeFullNameText = (text) => {
+    setErrFullName(text ? undefined : 'Bắt buộc nhập');
     setFullName(text);
-    setErrFullName(fullName ? undefined : 'Bắt buộc nhập');
-  };
-  const onChangeBirthdayText = (text) => {
-    setBirthday(text);
-    setErrBirthday(birthday ? undefined : 'Bắt buộc nhập');
   };
 
   const validate = () => {
-    return (
-      _.isEmpty(images) ||
-      _.isEmpty(code) ||
-      _.isEmpty(fullName) ||
-      _.isEmpty(birthday)
-    );
+    return _.isEmpty(images) || _.isEmpty(code) || _.isEmpty(fullName);
   };
   const onPushImage = async () => {
     if (validate()) {
@@ -128,9 +117,7 @@ const CaptureImagesView = (props) => {
             firestore()
               .collection('Users')
               .add({
-                code: code,
-                fullName: fullName,
-                birthday: birthday,
+                code: [code, fullName],
                 uri: url,
               })
               .then(() => {
@@ -144,6 +131,10 @@ const CaptureImagesView = (props) => {
 
   const onModalHide = () => {
     setImages([]);
+    setCode();
+    setErrCode();
+    setFullName();
+    setErrFullName();
   };
 
   return (
@@ -153,16 +144,15 @@ const CaptureImagesView = (props) => {
       onModalHide={onModalHide}
       backdropOpacity={0.3}>
       <View style={styles.container}>
-        <View row spread marginB-10 marginT-30>
+        <View row spread marginB-10 marginT-10>
           <TextField
             containerStyle={{flex: 1}}
             key={'code'}
-            placeholder={'Mã'}
+            title={'[Mã HS]'}
             underlineColor={{
               focus: colors.primary,
               error: colors.yellow,
             }}
-            centered
             multiline={false}
             onChangeText={onChangeCodeText}
             error={errCode}
@@ -171,29 +161,14 @@ const CaptureImagesView = (props) => {
           <TextField
             containerStyle={{flex: 1, paddingHorizontal: 4}}
             key={'fullname'}
-            placeholder={'Họ Tên'}
+            title={'[Họ tên][2 số cuối năm sinh]'}
             underlineColor={{
               focus: colors.primary,
               error: colors.yellow,
             }}
-            centered
             multiline={false}
             onChangeText={onChangeFullNameText}
             error={errFullName}
-            useTopErrors
-          />
-          <TextField
-            containerStyle={{flex: 1}}
-            key={'birthday'}
-            placeholder={'Ngày sinh'}
-            underlineColor={{
-              focus: colors.primary,
-              error: colors.yellow,
-            }}
-            centered
-            multiline={false}
-            onChangeText={onChangeBirthdayText}
-            error={errBirthday}
             useTopErrors
           />
         </View>
@@ -201,10 +176,8 @@ const CaptureImagesView = (props) => {
           data={images || []}
           keyExtractor={(item, index) => `${index}`}
           renderItem={({item, index}) => renderImage(item, index)}
-          ref={(f) => {
-            flatList = f;
-          }}
-          onContentSizeChange={() => flatList.scrollToEnd()}
+          ref={flatList}
+          onContentSizeChange={() => flatList.current.scrollToEnd()}
           ListFooterComponent={renderAddImage}
         />
 
@@ -229,8 +202,10 @@ const CaptureImagesView = (props) => {
           marginH-5
           size="small"
           label="Đóng"
-          borderRadius={2}
+          borderRadius={4}
           labelStyle={{letterSpacing: 1}}
+          outline
+          outlineColor={colors.yellow}
           onPress={hideDialog}
           iconSource={(iconStyle) => (
             <Icon
