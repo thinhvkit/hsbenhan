@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -8,6 +8,7 @@ import {
 import _ from 'lodash';
 import {
   View,
+  Text,
   TextField,
   Button,
   TouchableOpacity,
@@ -18,25 +19,39 @@ import ImageViewing from 'react-native-image-viewing';
 import colors from '../src/util/colors';
 import CaptureImageView from '../src/CaptureImages';
 
+const convertToImageURI = (images = []) => {
+  return _.map(images, (image) => ({
+    uri: image,
+  }));
+};
+
 const Home = (props) => {
   const [showCaptureImage, setShowCaptureImage] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isViewing, setIsViewing] = useState(false);
+  const [imagesViewing, setImagesViewing] = useState([]);
   const [currentImageIndex, setImageIndex] = useState(0);
 
   const renderItem = ({item, index}) => {
+    const {code = '', uri} = item;
+    console.log(code, uri);
+
     return (
-      <TouchableOpacity flex paddingH-4 onPress={() => openImageViewing(index)}>
+      <TouchableOpacity
+        flex
+        paddingH-4
+        onPress={() => openImageViewing(item, index)}>
         <AnimatedImage
           containerStyle={{backgroundColor: colors.bluish, marginBottom: 10}}
           style={{resizeMode: 'cover', height: 250}}
-          source={item}
+          source={{uri}}
           loader={<ActivityIndicator />}
           key={index}
           animationDuration={index === 0 ? 300 : 800}
         />
+        <Text padding-10>{code.toString()}</Text>
       </TouchableOpacity>
     );
   };
@@ -53,25 +68,25 @@ const Home = (props) => {
     if (searchText.length > 0) {
       setIsLoading(true);
       setData([]);
-      const list = [];
+      let list = [];
       const user = await firestore()
         .collection('Users')
-        .where('code', 'array-contains', searchText)
+        .where('code', 'array-contains', searchText.toLowerCase())
         .get();
-      console.log(user.size);
-      user.forEach((documentSnapshot) => {
-        list.push(documentSnapshot.data());
-      });
-      setData(list);
+
       setIsLoading(false);
+      user.forEach((documentSnapshot) => {
+        const d = documentSnapshot.data();
+        list = [...list, ..._.map(d.images, (i) => ({code: d.code, uri: i}))];
+      });
+      console.log(list);
+      setData(list);
     }
   };
 
-  const openImageViewing = (index) => {
-    if (_.isEmpty(data)) {
-      return;
-    }
-    setImageIndex(index);
+  const openImageViewing = (item, index) => {
+    setImageIndex(0);
+    setImagesViewing([{uri: item.uri}]);
     setIsViewing(true);
   };
 
@@ -151,7 +166,7 @@ const Home = (props) => {
         hideDialog={() => setShowCaptureImage(false)}
       />
       <ImageViewing
-        images={data}
+        images={imagesViewing}
         imageIndex={currentImageIndex}
         presentationStyle="overFullScreen"
         visible={isViewing}
