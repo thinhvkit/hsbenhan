@@ -114,15 +114,35 @@ const CaptureImagesView = (props) => {
           .ref(taskSnapshot.metadata.fullPath)
           .getDownloadURL()
           .then((url) => {
-            firestore()
+            const usersRef = firestore()
               .collection('Users')
-              .add({
-                code: [code, fullName],
-                uri: url,
-              })
-              .then(() => {
-                console.log('User added!');
-              });
+              .doc(code.toLowerCase());
+
+            usersRef.get().then((docSnapshot) => {
+              if (docSnapshot.exists) {
+                usersRef.onSnapshot((doc) => {
+                  usersRef
+                    .update({
+                      code: firestore.FieldValue.arrayUnion(
+                        fullName.toLowerCase(),
+                      ),
+                      images: firestore.FieldValue.arrayUnion(url),
+                    })
+                    .then(() => {
+                      console.log('User updated!');
+                    });
+                });
+              } else {
+                usersRef
+                  .set({
+                    code: [code.toLowerCase(), fullName.toLowerCase()],
+                    images: [url],
+                  })
+                  .then(() => {
+                    console.log('User added!');
+                  }); // create the document
+              }
+            });
           });
       });
     });
@@ -144,11 +164,13 @@ const CaptureImagesView = (props) => {
       onModalHide={onModalHide}
       backdropOpacity={0.3}>
       <View style={styles.container}>
-        <View row spread marginB-10 marginT-10>
+        <View row spread marginB-40 marginT-10>
           <TextField
-            containerStyle={{flex: 1}}
+            containerStyle={{flex: 1, paddingHorizontal: 6}}
             key={'code'}
-            title={'[Mã HS]'}
+            floatingPlaceholder
+            floatOnFocus
+            placeholder="Mã HS"
             underlineColor={{
               focus: colors.primary,
               error: colors.yellow,
@@ -159,9 +181,11 @@ const CaptureImagesView = (props) => {
             useTopErrors
           />
           <TextField
-            containerStyle={{flex: 1, paddingHorizontal: 4}}
+            containerStyle={{flex: 1, paddingHorizontal: 6}}
             key={'fullname'}
-            title={'[Họ tên][2 số cuối năm sinh]'}
+            floatingPlaceholder
+            placeholder="Họ tên_năm sinh"
+            helperText="Viết thường không dấu"
             underlineColor={{
               focus: colors.primary,
               error: colors.yellow,
