@@ -36,8 +36,6 @@ const Home = (props) => {
 
   const renderItem = ({item, index}) => {
     const {code = '', uri} = item;
-    console.log(code, uri);
-
     return (
       <TouchableOpacity
         flex
@@ -69,18 +67,22 @@ const Home = (props) => {
       setIsLoading(true);
       setData([]);
       let list = [];
-      const user = await firestore()
-        .collection('Users')
-        .where('code', 'array-contains', searchText.toLowerCase())
-        .get();
+      try {
+        const user = await firestore()
+          .collection('Users')
+          .where('code', 'array-contains', searchText.toLowerCase())
+          .get();
 
-      setIsLoading(false);
-      user.forEach((documentSnapshot) => {
-        const d = documentSnapshot.data();
-        list = [...list, ..._.map(d.images, (i) => ({code: d.code, uri: i}))];
-      });
-      console.log(list);
-      setData(list);
+        setIsLoading(false);
+        user.forEach((documentSnapshot) => {
+          const d = documentSnapshot.data();
+          list = [...list, ..._.map(d.images, (i) => ({code: d.code, uri: i}))];
+        });
+        setData(list);
+      } catch (err) {
+        setIsLoading(false);
+        console.log(err);
+      }
     }
   };
 

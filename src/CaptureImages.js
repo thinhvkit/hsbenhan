@@ -118,29 +118,21 @@ const CaptureImagesView = (props) => {
               .collection('Users')
               .doc(code.toLowerCase());
 
-            usersRef.get().then((docSnapshot) => {
-              if (docSnapshot.exists) {
-                usersRef.onSnapshot((doc) => {
-                  usersRef
-                    .update({
-                      code: firestore.FieldValue.arrayUnion(
-                        fullName.toLowerCase(),
-                      ),
-                      images: firestore.FieldValue.arrayUnion(url),
-                    })
-                    .then(() => {
-                      console.log('User updated!');
-                    });
+            firestore().runTransaction(async (transaction) => {
+              // Get user data first
+              const userSnapshot = await transaction.get(usersRef);
+              if (userSnapshot.exists) {
+                transaction.update(usersRef, {
+                  code: firestore.FieldValue.arrayUnion(fullName.toLowerCase()),
+                  images: firestore.FieldValue.arrayUnion(url),
                 });
+                console.log('User updated!');
               } else {
-                usersRef
-                  .set({
-                    code: [code.toLowerCase(), fullName.toLowerCase()],
-                    images: [url],
-                  })
-                  .then(() => {
-                    console.log('User added!');
-                  }); // create the document
+                transaction.set(usersRef, {
+                  code: [code.toLowerCase(), fullName.toLowerCase()],
+                  images: [url],
+                });
+                console.log('User added!'); // create the document
               }
             });
           });
