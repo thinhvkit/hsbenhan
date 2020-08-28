@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -18,12 +18,6 @@ import firestore from '@react-native-firebase/firestore';
 import ImageViewing from 'react-native-image-viewing';
 import colors from '../src/util/colors';
 import CaptureImageView from '../src/CaptureImages';
-
-const convertToImageURI = (images = []) => {
-  return _.map(images, (image) => ({
-    uri: image,
-  }));
-};
 
 const Home = (props) => {
   const [showCaptureImage, setShowCaptureImage] = useState(false);

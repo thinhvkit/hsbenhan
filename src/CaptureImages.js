@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import _ from 'lodash';
-import {View, Button, TextField} from 'react-native-ui-lib';
+import {View, Button, TextField, Toast} from 'react-native-ui-lib';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
@@ -26,14 +26,20 @@ const CaptureImagesView = (props) => {
   const [errCode, setErrCode] = useState();
   const [fullName, setFullName] = useState();
   const [errFullName, setErrFullName] = useState();
+  const [showTopToast, setShowTopToast] = useState(false);
+  const [messageToast, setMessageToast] = useState('');
 
   const flatList = React.createRef();
 
   const callback = (response) => {
     if (response.didCancel) {
       console.log('User cancelled photo picker');
+      setMessageToast('User cancelled photo picker');
+      setShowTopToast(true);
     } else if (response.error) {
       console.log('ImagePicker Error: ', response.error);
+      setMessageToast(response.error);
+      setShowTopToast(true);
     } else {
       const getFilename = response.uri.split('/');
 
@@ -65,7 +71,7 @@ const CaptureImagesView = (props) => {
             onRemoveImage(index);
           }}
           style={styles.removeImage}>
-          <Icon name="remove-circle" color={colors.primary} size={30} />
+          <Icon name="md-close-sharp" color={colors.primary} size={30} />
         </TouchableOpacity>
       </View>
     );
@@ -78,7 +84,7 @@ const CaptureImagesView = (props) => {
         onPress={() => {
           selectPhotoTapped(callback);
         }}>
-        <Icon name="add-circle" color={colors.primary} size={30} />
+        <Icon name="md-add-circle" color={colors.primary} size={30} />
       </TouchableOpacity>
     );
   };
@@ -225,11 +231,18 @@ const CaptureImagesView = (props) => {
           onPress={hideDialog}
           iconSource={(iconStyle) => (
             <Icon
-              name="close-circle-outline"
+              name="md-arrow-back-circle"
               size={20}
               color={iconStyle[0].tintColor}
             />
           )}
+        />
+        <Toast
+          visible={showTopToast}
+          position={'top'}
+          message={messageToast}
+          onDismiss={() => setShowTopToast(false)}
+          showDismiss={true}
         />
       </View>
     </Modal>
