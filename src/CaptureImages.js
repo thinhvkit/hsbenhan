@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import _ from 'lodash';
-import {View, Button, TextField, Toast} from 'react-native-ui-lib';
+import {View, Button, TextField, Toast, Colors} from 'react-native-ui-lib';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
@@ -160,13 +160,16 @@ const CaptureImagesView = (props) => {
       style={common.roundedDialog}
       isVisible={visible}
       onModalHide={onModalHide}
-      backdropOpacity={0.3}>
+      backdropOpacity={0.3}
+      onSwipeCancel={hideDialog}
+      onBackdropPress={hideDialog}>
       <View style={styles.container}>
-        <View row spread marginB-40 marginT-10>
+        <View marginB-40>
           <TextField
-            containerStyle={{flex: 1, paddingHorizontal: 6}}
+            containerStyle={{paddingHorizontal: 6}}
             key={'code'}
             floatingPlaceholder
+            floatingPlaceholderColor={Colors.orange10}
             floatOnFocus
             placeholder="Mã HS"
             underlineColor={{
@@ -179,11 +182,11 @@ const CaptureImagesView = (props) => {
             useTopErrors
           />
           <TextField
-            containerStyle={{flex: 1, paddingHorizontal: 6}}
+            containerStyle={{marginTop: 10, paddingHorizontal: 6}}
             key={'fullname'}
             floatingPlaceholder
-            placeholder="Họ tên_năm sinh"
-            helperText="Viết thường không dấu"
+            floatingPlaceholderColor={Colors.orange10}
+            placeholder="Họ Tên_Năm sinh"
             underlineColor={{
               focus: colors.primary,
               error: colors.yellow,
@@ -203,40 +206,18 @@ const CaptureImagesView = (props) => {
           ListFooterComponent={renderAddImage}
         />
 
-        <View row margin-10 center>
+        <View row marginH-15 marginV-20 center>
           <Button
-            orange10
-            marginH-5
-            marginV-20
+            flex
+            white10
             size="large"
             label="OK"
             borderRadius={10}
             labelStyle={{letterSpacing: 1}}
-            outline
-            outlineColor={colors.yellow}
+            backgroundColor={Colors.orange10}
             onPress={onPushImage}
           />
         </View>
-        <Button
-          style={{position: 'absolute', top: -30, right: 0}}
-          backgroundColor="#ffffff"
-          orange10
-          marginH-5
-          size="small"
-          label="Đóng"
-          borderRadius={4}
-          labelStyle={{letterSpacing: 1}}
-          outline
-          outlineColor={colors.yellow}
-          onPress={hideDialog}
-          iconSource={(iconStyle) => (
-            <Icon
-              name="md-arrow-back-circle"
-              size={20}
-              color={iconStyle[0].tintColor}
-            />
-          )}
-        />
         <Toast
           visible={showTopToast}
           position={'top'}

@@ -13,6 +13,7 @@ import {
   Button,
   TouchableOpacity,
   AnimatedImage,
+  Colors,
 } from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
 import ImageViewing from 'react-native-image-viewing';
@@ -107,39 +108,35 @@ const Home = (props) => {
           }}
           style={{
             backgroundColor: colors.bluish,
-            height: '100%',
             paddingHorizontal: 15,
             paddingVertical: 8,
             borderRadius: 20,
           }}
-          centered
           multiline={false}
           enableErrors={false}
           onChangeText={onChangeSearchText}
         />
         <View row paddingT-15>
           <Button
-            backgroundColor="#f1f1f1"
-            blue30
+            backgroundColor={Colors.orange10}
+            white10
             marginH-5
             marginV-20
-            size="small"
+            size="medium"
             label="Tìm"
             borderRadius={10}
             labelStyle={{letterSpacing: 1}}
-            outline
             onPress={onSearch}
           />
           <Button
-            backgroundColor="#f1f1f1"
-            blue30
+            backgroundColor={Colors.orange10}
+            white10
             marginH-5
             marginV-20
-            size="small"
+            size="medium"
             label="Thêm hình ảnh"
             borderRadius={10}
             labelStyle={{letterSpacing: 1}}
-            outline
             onPress={onShowCaptureImage}
           />
         </View>

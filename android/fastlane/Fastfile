@@ -13,30 +13,30 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-default_platform(:ios)
+default_platform(:android)
 
-platform :ios do
-  desc "get certificates"
-  lane :get do
-    #get_certificates(development: true)         # invokes cert
-    #get_provisioning_profile(development: true)  # invokes sigh
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
   end
 
-  desc "Description of what the lane does"
-  lane :release do
-    sync_code_signing(type: "adhoc")
-    build_app(
-      workspace: "crm.xcworkspace", 
-      scheme: "hsbenhan", 
-      output_directory: "./build", 
-      silent: true,
-      clean: true,
-      output_name: "hsbenhanApp", 
-      export_method: "ad-hoc"
-    )
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    gradle(task: "clean assembleRelease")
+    #crashlytics
     upload_diawi
-  end
   
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+
   lane :upload_diawi do 
     diawi(
       token: "3rROTjnjBkkGulZelN8TSp72PeEEShXG4BNq2KuTii"
