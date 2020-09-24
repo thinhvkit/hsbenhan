@@ -1,4 +1,4 @@
-package com.hsbenhan;
+package com.tvunlimited.hsbenhan;
 
 import com.facebook.react.ReactActivity;
 

@@ -1,0 +1,4 @@
+git_url("https://github.com/thinhvkit/hsbenhan.git")
+git_branch("develop")
+username("haondq@gmail.com")
+app_identifier("com.tvunlimited.hsbenhan")
