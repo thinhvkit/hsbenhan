@@ -1,10 +1,5 @@
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  FlatList,
-  PixelRatio,
-  ActivityIndicator,
-} from 'react-native';
+import React, {useState, useLayoutEffect} from 'react';
+import {FlatList, ActivityIndicator} from 'react-native';
 import _ from 'lodash';
 import {
   View,
@@ -17,17 +12,36 @@ import {
 } from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
 import ImageViewing from 'react-native-image-viewing';
+import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../src/util/colors';
 import CaptureImageView from '../src/CaptureImages';
 
-const Home = (props) => {
+Colors.loadColors({
+  primary: colors.primary,
+});
+
+const Home = ({navigation}) => {
   const [showCaptureImage, setShowCaptureImage] = useState(false);
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isViewing, setIsViewing] = useState(false);
   const [imagesViewing, setImagesViewing] = useState([]);
   const [currentImageIndex, setImageIndex] = useState(0);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={{paddingEnd: 10}}
+          onPress={() => {
+            navigation.navigate('Report');
+          }}>
+          <Icon name="md-information-circle-outline" size={30} color="white" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const renderItem = ({item, index}) => {
     const {code = '', uri} = item;
@@ -71,6 +85,7 @@ const Home = (props) => {
         setIsLoading(false);
         user.forEach((documentSnapshot) => {
           const d = documentSnapshot.data();
+          console.log(d);
           list = [...list, ..._.map(d.images, (i) => ({code: d.code, uri: i}))];
         });
         setData(list);
@@ -89,15 +104,16 @@ const Home = (props) => {
 
   const onRequestClose = () => setIsViewing(false);
 
+  const renderEmptyContainer = () => {
+    return (
+      <View center>
+        <Text>Không tìm thấy bệnh nhân</Text>
+      </View>
+    );
+  };
+
   return (
     <View>
-      {isLoading && (
-        <ActivityIndicator
-          style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}
-          size="large"
-          color={colors.primary}
-        />
-      )}
       <View centerV paddingH-10 paddingV-10 marginB-10>
         <TextField
           key={'centered'}
@@ -151,6 +167,7 @@ const Home = (props) => {
           renderItem={renderItem}
           refreshing={isLoading}
           onRefresh={onSearch}
+          ListEmptyComponent={renderEmptyContainer()}
         />
       </View>
 
@@ -169,18 +186,5 @@ const Home = (props) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  imageContainer: {
-    borderRadius: 5,
-    borderColor: '#9B9B9B',
-    borderWidth: 1 / PixelRatio.get(),
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginHorizontal: 4,
-    marginVertical: 4,
-  },
-});
 
 export default Home;
