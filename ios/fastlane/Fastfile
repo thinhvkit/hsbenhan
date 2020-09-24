@@ -18,8 +18,8 @@ default_platform(:ios)
 platform :ios do
   desc "get certificates"
   lane :get do
-    #get_certificates(development: true)         # invokes cert
-    #get_provisioning_profile(development: true)  # invokes sigh
+    get_certificates(development: true)         # invokes cert
+    get_provisioning_profile(development: true)  # invokes sigh
   end
 
   desc "Description of what the lane does"

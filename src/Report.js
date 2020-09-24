@@ -27,20 +27,19 @@ const ReportView = () => {
   useEffect(() => {
     const subscriber = firestore()
       .collectionGroup('Users')
-      .orderBy('code', 'desc')
       .onSnapshot((querySnapshot) => {
-        const users = [];
+        const userDocs = [];
         if (querySnapshot) {
           querySnapshot.forEach((doc) => {
             const {code} = doc.data();
-            users.push({
+            userDocs.push({
               code,
               key: doc.id,
             });
           });
         }
 
-        setUsers(users);
+        setUsers(userDocs);
         setLoading(false);
       });
 
@@ -53,7 +52,7 @@ const ReportView = () => {
   }
 
   return (
-    <View>
+    <View flex>
       <View padding-10 bg-primary>
         <Text text60 white>
           Danh sách bệnh nhân

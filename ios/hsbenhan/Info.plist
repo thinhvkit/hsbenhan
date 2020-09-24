@@ -42,7 +42,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -51,8 +51,6 @@
 	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>SFProDisplay-Regular.ttf</string>
-		<string>SFProDisplay-Bold.ttf</string>
 		<string>Ionicons.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
