@@ -1,12 +1,6 @@
-<<<<<<< HEAD:src/Report.js
-import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet} from 'react-native';
-import {View, Text, Card, Colors, LoaderScreen} from 'react-native-ui-lib';
-=======
 import React, { useEffect, useState } from 'react';
-import { FlatList, ActivityIndicator } from 'react-native';
-import { View, Text, Card, Colors } from 'react-native-ui-lib';
->>>>>>> 9a88b1f (update library):src/screen/Report.js
+import { FlatList, StyleSheet } from 'react-native';
+import { View, Text, Card, Colors, LoaderScreen } from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
 import colors from '../src/util/colors';
 
@@ -34,42 +28,20 @@ const ReportView = () => {
   useEffect(() => {
     let userList = [];
     const subscriber = firestore()
-<<<<<<< HEAD:src/Report.js
-      .collectionGroup('Users')
-      .orderBy('code')
-=======
       .collection('Users')
->>>>>>> 9a88b1f (update library):src/screen/Report.js
       .limit(20)
       .onSnapshot(querySnapshot => {
         if (querySnapshot) {
-<<<<<<< HEAD:src/Report.js
-          querySnapshot.forEach(doc => {
-            const {code} = doc.data();
-            userList = [
-              ...userList,
-              {
-                code,
-                key: doc.id,
-              },
-            ];
-=======
           querySnapshot.forEach((doc) => {
             const { code } = doc.data();
             userList.push({
               code,
               key: doc.id,
             });
->>>>>>> 9a88b1f (update library):src/screen/Report.js
           });
           setUsers(userList);
         }
-<<<<<<< HEAD:src/Report.js
-
-        console.log('userList', userList);
-=======
         setUsers(userList);
->>>>>>> 9a88b1f (update library):src/screen/Report.js
         setLoading(false);
       });
 
@@ -79,7 +51,7 @@ const ReportView = () => {
 
   return (
     <View flex>
-      <View marginB-10 padding-10 bg-primary>
+      <View padding-10 bg-primary>
         <Text text60 white>
           Danh sách bệnh nhân
         </Text>

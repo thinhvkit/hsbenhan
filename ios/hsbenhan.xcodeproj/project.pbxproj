@@ -180,22 +180,6 @@
 		4258169656444601B07C9A45 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				0ABA8EAD891D45088A8EDE8A /* AntDesign.ttf */,
-				F957580D78424343B0BC626C /* Entypo.ttf */,
-				E0320BEFF4184850B58199C6 /* EvilIcons.ttf */,
-				F6793A54C30D431988E47783 /* Feather.ttf */,
-				5CCBDBF39C0A4E04959364EC /* FontAwesome.ttf */,
-				374885281DFE469EB4BD9D99 /* FontAwesome5_Brands.ttf */,
-				1D006F5B7E3840CB899E3DB5 /* FontAwesome5_Regular.ttf */,
-				A3E714C0D6F04E90B2BB34D0 /* FontAwesome5_Solid.ttf */,
-				DDC48BFB8EEC472B800FBB00 /* Fontisto.ttf */,
-				1D4839BDB9AE47ACBAEA07A4 /* Foundation.ttf */,
-				EC3FFB7FAFC1473193519B1B /* Ionicons.ttf */,
-				9F3C0823E5BC4D87BCC4B580 /* MaterialCommunityIcons.ttf */,
-				CB105181FC974CE69C9B7E4B /* MaterialIcons.ttf */,
-				61C954B31BD9455984FF6998 /* Octicons.ttf */,
-				23FE9EB2C54D4535AFF31529 /* SimpleLineIcons.ttf */,
-				0C4AF90F33EA446484641D73 /* Zocial.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
