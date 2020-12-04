@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, ActivityIndicator} from 'react-native';
 import {View, Text, Card, Colors} from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
 
@@ -25,22 +25,23 @@ const ReportView = () => {
   };
 
   useEffect(() => {
+    const userList = [];
     const subscriber = firestore()
       .collectionGroup('Users')
-      .orderBy('code', 'desc')
+      .orderBy('timeStamp', 'desc')
+      .limit(20)
       .onSnapshot((querySnapshot) => {
-        const users = [];
         if (querySnapshot) {
           querySnapshot.forEach((doc) => {
             const {code} = doc.data();
-            users.push({
+            userList.push({
               code,
               key: doc.id,
             });
           });
         }
-
-        setUsers(users);
+        setUsers(userList);
+        console.log('userList', userList);
         setLoading(false);
       });
 
@@ -49,7 +50,7 @@ const ReportView = () => {
   }, []);
 
   if (loading) {
-    return null; // or a spinner
+    return <ActivityIndicator />; // or a spinner
   }
 
   return (
