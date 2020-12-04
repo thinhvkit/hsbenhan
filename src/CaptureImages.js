@@ -131,6 +131,7 @@ const CaptureImagesView = (props) => {
                 transaction.update(usersRef, {
                   code: firestore.FieldValue.arrayUnion(fullName.toLowerCase()),
                   images: firestore.FieldValue.arrayUnion(url),
+                  timeStamp: firestore.FieldValue.serverTimestamp(),
                 });
                 console.log('User updated!');
               } else {

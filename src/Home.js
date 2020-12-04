@@ -81,11 +81,9 @@ const Home = ({navigation}) => {
           .collection('Users')
           .where('code', 'array-contains', searchText.toLowerCase())
           .get();
-
         setIsLoading(false);
         user.forEach((documentSnapshot) => {
           const d = documentSnapshot.data();
-          console.log(d);
           list = [...list, ..._.map(d.images, (i) => ({code: d.code, uri: i}))];
         });
         setData(list);
