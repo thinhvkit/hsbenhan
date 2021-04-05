@@ -1,5 +1,5 @@
 const blueVersion = {
-  primary: '#FF5733',
+  primary: '#F15533',
   secondary: '#F1F2F3',
   grey: '#acacac',
   gray: '#5f5f5f',

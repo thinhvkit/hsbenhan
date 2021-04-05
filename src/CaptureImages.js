@@ -9,7 +9,14 @@ import {
   FlatList,
 } from 'react-native';
 import _ from 'lodash';
-import {View, Button, TextField, Toast, Colors} from 'react-native-ui-lib';
+import {
+  View,
+  Button,
+  TextField,
+  Toast,
+  Colors,
+  LoaderScreen,
+} from 'react-native-ui-lib';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
@@ -19,7 +26,7 @@ import {selectPhotoTapped} from '../src/util/helpers';
 import colors from '../src/util/colors';
 import common from '../src/util/common';
 
-const CaptureImagesView = (props) => {
+const CaptureImagesView = props => {
   const {visible, hideDialog} = props;
   const [images, setImages] = useState();
   const [code, setCode] = useState();
@@ -28,10 +35,11 @@ const CaptureImagesView = (props) => {
   const [errFullName, setErrFullName] = useState();
   const [showTopToast, setShowTopToast] = useState(false);
   const [messageToast, setMessageToast] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const flatList = React.createRef();
 
-  const callback = (response) => {
+  const callback = response => {
     if (response.didCancel) {
       console.log('User cancelled photo picker');
       setMessageToast('User cancelled photo picker');
@@ -57,7 +65,7 @@ const CaptureImagesView = (props) => {
     }
   };
 
-  const onRemoveImage = (index) => {
+  const onRemoveImage = index => {
     images.splice(index, 1);
     setImages([...images]);
   };
@@ -82,70 +90,90 @@ const CaptureImagesView = (props) => {
       <TouchableOpacity
         style={[{width: 100, height: 100}, styles.imageContainer]}
         onPress={() => {
-          selectPhotoTapped(callback);
+          selectPhotoTapped(callback, true);
         }}>
         <Icon name="md-add-circle" color={colors.primary} size={30} />
       </TouchableOpacity>
     );
   };
 
-  const onChangeCodeText = (text) => {
+  const onChangeCodeText = text => {
     setErrCode(text ? undefined : 'Bắt buộc nhập');
     setCode(text);
   };
-  const onChangeFullNameText = (text) => {
-    setErrFullName(text ? undefined : 'Bắt buộc nhập');
+  const onChangeFullNameText = text => {
     setFullName(text);
   };
 
+  const onClear = () => {
+    setImages();
+    setCode();
+    setFullName();
+  };
+
   const validate = () => {
-    return _.isEmpty(images) || _.isEmpty(code) || _.isEmpty(fullName);
+    return _.isEmpty(images) || _.isEmpty(code);
   };
   const onPushImage = async () => {
     if (validate()) {
       return;
     }
 
-    images.map((i) => {
+    setLoading(true);
+    images.map(i => {
       const reference = storage().ref(`/${code}/${i.name}`);
       const pathToFile = i.uri;
       const task = reference.putFile(pathToFile);
-      task.on('state_changed', (taskSnapshot) => {
+      task.on('state_changed', taskSnapshot => {
         console.log(taskSnapshot);
       });
 
-      task.then((taskSnapshot) => {
+      task.then(taskSnapshot => {
         console.log('Image uploaded to the bucket!', taskSnapshot);
         storage()
           .ref(taskSnapshot.metadata.fullPath)
           .getDownloadURL()
-          .then((url) => {
+          .then(url => {
             const usersRef = firestore()
               .collection('Users')
               .doc(code.toLowerCase());
 
-            firestore().runTransaction(async (transaction) => {
+            firestore().runTransaction(async transaction => {
               // Get user data first
               const userSnapshot = await transaction.get(usersRef);
               if (userSnapshot.exists) {
                 transaction.update(usersRef, {
                   code: firestore.FieldValue.arrayUnion(fullName.toLowerCase()),
                   images: firestore.FieldValue.arrayUnion(url),
-                  timeStamp: firestore.FieldValue.serverTimestamp(),
+                  timeStamp: firestore.Timestamp.now(),
                 });
                 console.log('User updated!');
+                setMessageToast('Cập nhật thành công');
+                setShowTopToast(true);
               } else {
+                const codeStr = [code.toLowerCase()];
+                if (!_.isEmpty(fullName)) {
+                  codeStr.push(fullName.toLowerCase());
+                }
                 transaction.set(usersRef, {
-                  code: [code.toLowerCase(), fullName.toLowerCase()],
+                  code: codeStr,
                   images: [url],
                 });
+                setMessageToast('Thêm thành công');
+                setShowTopToast(true);
                 console.log('User added!'); // create the document
               }
+              onClear();
             });
+            setLoading(false);
+          })
+          .catch(error => {
+            setMessageToast('Lỗi thêm hình ảnh');
+            setShowTopToast(true);
+            setLoading(false);
           });
       });
     });
-    hideDialog();
   };
 
   const onModalHide = () => {
@@ -177,6 +205,7 @@ const CaptureImagesView = (props) => {
               focus: colors.primary,
               error: colors.yellow,
             }}
+            value={code}
             multiline={false}
             onChangeText={onChangeCodeText}
             error={errCode}
@@ -192,6 +221,7 @@ const CaptureImagesView = (props) => {
               focus: colors.primary,
               error: colors.yellow,
             }}
+            value={fullName}
             multiline={false}
             onChangeText={onChangeFullNameText}
             error={errFullName}
@@ -216,6 +246,7 @@ const CaptureImagesView = (props) => {
             borderRadius={10}
             labelStyle={{letterSpacing: 1}}
             backgroundColor={Colors.orange10}
+            disabled={loading}
             onPress={onPushImage}
           />
         </View>
@@ -225,8 +256,17 @@ const CaptureImagesView = (props) => {
           message={messageToast}
           onDismiss={() => setShowTopToast(false)}
           showDismiss={true}
+          autoDismiss={2000}
         />
       </View>
+      {loading && (
+        <LoaderScreen
+          color={colors.primary}
+          message="Đang tải..."
+          messageStyle={styles.paragraph}
+          overlay
+        />
+      )}
     </Modal>
   );
 };
@@ -258,11 +298,18 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
   },
+  paragraph: {
+    color: colors.primary,
+    textDecorationColor: 'yellow',
+    textShadowColor: 'red',
+    textShadowRadius: 1,
+    margin: 24,
+  },
 });
 
 export default compose(
   connect(
-    (state) => ({}),
-    (dispatch) => ({}),
+    state => ({}),
+    dispatch => ({}),
   ),
 )(CaptureImagesView);

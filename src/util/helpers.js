@@ -1,22 +1,14 @@
-import ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'react-native-image-picker';
 
 export const selectPhotoTapped = (callback, onlyTake = false) => {
   const options = {
-    quality: 0.6,
-    tintColor: 'black',
-    title: 'Chọn hình ảnh',
-    takePhotoButtonTitle: 'Chụp ảnh',
-    chooseFromLibraryButtonTitle: 'Chọn hình ảnh từ thư viện',
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-      cameraRoll: true,
-    },
+    mediaType: 'photo',
+    includeBase64: false,
   };
 
   if (onlyTake) {
     ImagePicker.launchCamera(options, callback);
   } else {
-    ImagePicker.showImagePicker(options, callback);
+    ImagePicker.launchImageLibrary(options, callback);
   }
 };

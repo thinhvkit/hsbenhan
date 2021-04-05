@@ -67,7 +67,7 @@ const Home = ({navigation}) => {
     setShowCaptureImage(true);
   };
 
-  const onChangeSearchText = (text) => {
+  const onChangeSearchText = text => {
     setSearchText(text);
   };
 
@@ -82,9 +82,9 @@ const Home = ({navigation}) => {
           .where('code', 'array-contains', searchText.toLowerCase())
           .get();
         setIsLoading(false);
-        user.forEach((documentSnapshot) => {
+        user.forEach(documentSnapshot => {
           const d = documentSnapshot.data();
-          list = [...list, ..._.map(d.images, (i) => ({code: d.code, uri: i}))];
+          list = [...list, ..._.map(d.images, i => ({code: d.code, uri: i}))];
         });
         setData(list);
       } catch (err) {
