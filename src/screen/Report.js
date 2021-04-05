@@ -51,7 +51,7 @@ const ReportView = () => {
 
   return (
     <View flex>
-      <View padding-10 bg-primary>
+      <View marginB-10 padding-10 bg-primary>
         <Text text60 white>
           Danh sách bệnh nhân
         </Text>
