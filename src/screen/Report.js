@@ -1,6 +1,12 @@
+<<<<<<< HEAD:src/Report.js
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import {View, Text, Card, Colors, LoaderScreen} from 'react-native-ui-lib';
+=======
+import React, { useEffect, useState } from 'react';
+import { FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, Card, Colors } from 'react-native-ui-lib';
+>>>>>>> 9a88b1f (update library):src/screen/Report.js
 import firestore from '@react-native-firebase/firestore';
 import colors from '../src/util/colors';
 
@@ -8,8 +14,8 @@ const ReportView = () => {
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(true);
 
-  const renderItem = ({item, index}) => {
-    const {code = ''} = item;
+  const renderItem = ({ item, index }) => {
+    const { code = '' } = item;
     return (
       <Card
         flex
@@ -28,11 +34,16 @@ const ReportView = () => {
   useEffect(() => {
     let userList = [];
     const subscriber = firestore()
+<<<<<<< HEAD:src/Report.js
       .collectionGroup('Users')
       .orderBy('code')
+=======
+      .collection('Users')
+>>>>>>> 9a88b1f (update library):src/screen/Report.js
       .limit(20)
       .onSnapshot(querySnapshot => {
         if (querySnapshot) {
+<<<<<<< HEAD:src/Report.js
           querySnapshot.forEach(doc => {
             const {code} = doc.data();
             userList = [
@@ -42,11 +53,23 @@ const ReportView = () => {
                 key: doc.id,
               },
             ];
+=======
+          querySnapshot.forEach((doc) => {
+            const { code } = doc.data();
+            userList.push({
+              code,
+              key: doc.id,
+            });
+>>>>>>> 9a88b1f (update library):src/screen/Report.js
           });
           setUsers(userList);
         }
+<<<<<<< HEAD:src/Report.js
 
         console.log('userList', userList);
+=======
+        setUsers(userList);
+>>>>>>> 9a88b1f (update library):src/screen/Report.js
         setLoading(false);
       });
 

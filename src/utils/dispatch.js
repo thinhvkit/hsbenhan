@@ -1,4 +1,4 @@
-import {ToastActionsCreators} from 'react-native-redux-toast';
+import { ToastActionsCreators } from 'react-native-redux-toast';
 
 export const toastDispatches = (dispatch) => ({
   error: (message) => dispatch(ToastActionsCreators.displayError(message)),

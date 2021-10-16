@@ -15,19 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "498573691482-shp5oudjsikihhbf1kepguu5i90omvfk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.tvunlimited.hsbenhan",
-            "certificate_hash": "bc6969722e86a4dacda0a2d6fdfa7864dc74b30f"
-          }
-        },
-        {
           "client_id": "498573691482-1ki3i20fe8avp8jjsnbve6gh6guojrdu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tvunlimited.hsbenhan",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "498573691482-oh2s8of3gi099saf8q42s2engkeget88.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tvunlimited.hsbenhan",
+            "certificate_hash": "96d753fd61f31c981b7ed6a86219cf0dc2d17b11"
           }
         },
         {
@@ -48,10 +48,10 @@
               "client_type": 3
             },
             {
-              "client_id": "498573691482-l55h8a5f8o90iph4tp1ha4ntji5ehviq.apps.googleusercontent.com",
+              "client_id": "498573691482-89tj1bllobqr4m8mnhkehi327bf6e04f.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.tv.hsbenhan"
+                "bundle_id": "com.tvunlimited.hsbenhan"
               }
             }
           ]

@@ -1,5 +1,4 @@
-import {StyleSheet} from 'react-native';
-import colors from './colors';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   roundedDialog: {
@@ -20,7 +19,6 @@ export default StyleSheet.create({
     flex: 1,
     height: 45,
     borderRadius: 25,
-    backgroundColor: colors.primary,
     justifyContent: 'center',
     marginHorizontal: 4,
     alignSelf: 'center',
