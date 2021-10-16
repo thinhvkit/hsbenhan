@@ -1,16 +1,21 @@
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+// In App.js in a new project
 
-import HomeScreen from '../Home';
-import ReportScreen from '../Report';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Colors } from 'react-native-ui-lib';
 
-import {colors} from '../util';
+import { loadConfigurations } from '../utils/configurations'
+import HomeScreen from '../screen/Home'
+import ReportScreen from '../screen/Report'
+import CapturePhoto from '../screen/Capture';
 
-const navigationOptions = (title, navigation) => {
+loadConfigurations();
+
+const navigationOptions = (title) => {
   return {
     headerStyle: {
-      backgroundColor: colors.primary,
+      backgroundColor: Colors.primary,
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -20,24 +25,23 @@ const navigationOptions = (title, navigation) => {
   };
 };
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
-const AppNavigation = () => {
+function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          options={({navigation}) => navigationOptions('Home', navigation)}
-          component={HomeScreen}
-        />
-        <Stack.Screen
-          name="Report"
-          options={({navigation}) => navigationOptions('Báo cáo', navigation)}
-          component={ReportScreen}
-        />
+        <Stack.Group>
+          <Stack.Screen name="Home" options={() => navigationOptions('Hồ Sơ Bệnh Án')} component={HomeScreen} />
+          <Stack.Screen name="Report" options={() => navigationOptions('Báo cáo')} component={ReportScreen} />
+        </Stack.Group>
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          <Stack.Screen name="Capture" options={() => navigationOptions('Chụp hình')} component={CapturePhoto} />
+        </Stack.Group>
       </Stack.Navigator>
+
     </NavigationContainer>
   );
-};
-export default AppNavigation;
+}
+
+export default App;

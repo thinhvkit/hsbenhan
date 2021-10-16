@@ -1,5 +1,5 @@
-import React, {useState, useLayoutEffect} from 'react';
-import {FlatList, ActivityIndicator} from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { FlatList, ActivityIndicator } from 'react-native';
 import _ from 'lodash';
 import {
   View,
@@ -13,15 +13,8 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import ImageViewing from 'react-native-image-viewing';
 import Icon from 'react-native-vector-icons/Ionicons';
-import colors from '../src/util/colors';
-import CaptureImageView from '../src/CaptureImages';
 
-Colors.loadColors({
-  primary: colors.primary,
-});
-
-const Home = ({navigation}) => {
-  const [showCaptureImage, setShowCaptureImage] = useState(false);
+const Home = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -29,11 +22,12 @@ const Home = ({navigation}) => {
   const [imagesViewing, setImagesViewing] = useState([]);
   const [currentImageIndex, setImageIndex] = useState(0);
 
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          style={{paddingEnd: 10}}
+          style={{ paddingEnd: 10 }}
           onPress={() => {
             navigation.navigate('Report');
           }}>
@@ -43,28 +37,28 @@ const Home = ({navigation}) => {
     });
   }, [navigation]);
 
-  const renderItem = ({item, index}) => {
-    const {code = '', uri} = item;
+  const renderItem = ({ item, index }) => {
+    const { code = '', uri } = item;
     return (
       <TouchableOpacity
         flex
-        paddingH-4
+        padding-6
         onPress={() => openImageViewing(item, index)}>
         <AnimatedImage
-          containerStyle={{backgroundColor: colors.bluish, marginBottom: 10}}
-          style={{resizeMode: 'cover', height: 250}}
-          source={{uri}}
+          containerStyle={{ backgroundColor: Colors.blue60, marginBottom: 10, borderRadius: 10 }}
+          style={{ resizeMode: 'cover', height: 250 }}
+          source={{ uri }}
           loader={<ActivityIndicator />}
           key={index}
           animationDuration={index === 0 ? 300 : 800}
         />
-        <Text padding-10>{code.toString()}</Text>
+        <Text padding-10 center>{code.toString()}</Text>
       </TouchableOpacity>
     );
   };
 
-  const onShowCaptureImage = () => {
-    setShowCaptureImage(true);
+  const onShowCapturePhoto = () => {
+    navigation.navigate('Capture');
   };
 
   const onChangeSearchText = (text) => {
@@ -76,27 +70,30 @@ const Home = ({navigation}) => {
       setIsLoading(true);
       setData([]);
       let list = [];
-      try {
-        const user = await firestore()
-          .collection('Users')
-          .where('code', 'array-contains', searchText.toLowerCase())
-          .get();
-        setIsLoading(false);
-        user.forEach((documentSnapshot) => {
-          const d = documentSnapshot.data();
-          list = [...list, ..._.map(d.images, (i) => ({code: d.code, uri: i}))];
+
+      firestore()
+        .collection('Users')
+        // Filter results
+        .where('code', 'array-contains', searchText.toLowerCase())
+        .get()
+        .then(querySnapshot => {
+          setIsLoading(false);
+          querySnapshot.forEach((documentSnapshot) => {
+            const d = documentSnapshot.data();
+            list = [...list, ..._.map(d.images, (i) => ({ code: d.code, uri: i }))];
+          });
+          setData(list);
+        }).catch((err) => {
+          setIsLoading(false);
+          console.log(err);
         });
-        setData(list);
-      } catch (err) {
-        setIsLoading(false);
-        console.log(err);
-      }
+
     }
   };
 
   const openImageViewing = (item, index) => {
     setImageIndex(0);
-    setImagesViewing([{uri: item.uri}]);
+    setImagesViewing([{ uri: item.uri }]);
     setIsViewing(true);
   };
 
@@ -116,12 +113,14 @@ const Home = ({navigation}) => {
         <TextField
           key={'centered'}
           placeholder={'Tìm kiếm'}
+          placeholderTextColor={Colors.white}
+          white
           underlineColor={{
-            focus: colors.primary,
-            error: colors.yellow,
+            focus: Colors.primary,
+            error: Colors.yellow,
           }}
           style={{
-            backgroundColor: colors.bluish,
+            backgroundColor: Colors.grey10,
             paddingHorizontal: 15,
             paddingVertical: 8,
             borderRadius: 20,
@@ -139,7 +138,7 @@ const Home = ({navigation}) => {
             size="medium"
             label="Tìm"
             borderRadius={10}
-            labelStyle={{letterSpacing: 1}}
+            labelStyle={{ letterSpacing: 1 }}
             onPress={onSearch}
           />
           <Button
@@ -150,8 +149,8 @@ const Home = ({navigation}) => {
             size="medium"
             label="Thêm hình ảnh"
             borderRadius={10}
-            labelStyle={{letterSpacing: 1}}
-            onPress={onShowCaptureImage}
+            labelStyle={{ letterSpacing: 1 }}
+            onPress={onShowCapturePhoto}
           />
         </View>
       </View>
@@ -161,7 +160,7 @@ const Home = ({navigation}) => {
           row
           numColumns={2}
           data={data}
-          keyExtractor={(item, index) => `${index}`}
+          keyExtractor={(_, index) => `${index}`}
           renderItem={renderItem}
           refreshing={isLoading}
           onRefresh={onSearch}
@@ -169,16 +168,12 @@ const Home = ({navigation}) => {
         />
       </View>
 
-      <CaptureImageView
-        visible={showCaptureImage}
-        hideDialog={() => setShowCaptureImage(false)}
-      />
       <ImageViewing
         images={imagesViewing}
         imageIndex={currentImageIndex}
-        presentationStyle="overFullScreen"
+        presentationStyle="fullScreen"
         visible={isViewing}
-        backgroundColor="#fff"
+        backgroundColor={Colors.grey60}
         onRequestClose={onRequestClose}
       />
     </View>

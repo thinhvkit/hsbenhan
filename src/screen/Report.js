@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, ActivityIndicator} from 'react-native';
-import {View, Text, Card, Colors} from 'react-native-ui-lib';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, Card, Colors } from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
 
 const ReportView = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const renderItem = ({item, index}) => {
-    const {code = ''} = item;
+  const renderItem = ({ item, index }) => {
+    const { code = '' } = item;
     return (
       <Card
         flex
@@ -27,13 +27,12 @@ const ReportView = () => {
   useEffect(() => {
     const userList = [];
     const subscriber = firestore()
-      .collectionGroup('Users')
-      .orderBy('timeStamp', 'desc')
+      .collection('Users')
       .limit(20)
       .onSnapshot((querySnapshot) => {
         if (querySnapshot) {
           querySnapshot.forEach((doc) => {
-            const {code} = doc.data();
+            const { code } = doc.data();
             userList.push({
               code,
               key: doc.id,
@@ -41,7 +40,6 @@ const ReportView = () => {
           });
         }
         setUsers(userList);
-        console.log('userList', userList);
         setLoading(false);
       });
 
