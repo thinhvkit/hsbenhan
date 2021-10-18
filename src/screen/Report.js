@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, ActivityIndicator } from 'react-native';
-import { View, Text, Card, Colors } from 'react-native-ui-lib';
+import { FlatList, StyleSheet } from 'react-native';
+import { View, Text, Card, Colors, LoaderScreen } from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
 
 const ReportView = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState();
   const [loading, setLoading] = useState(true);
 
   const renderItem = ({ item, index }) => {
@@ -15,9 +15,9 @@ const ReportView = () => {
         padding-10
         margin-4
         containerStyle={{
-          backgroundColor: index % 2 === 0 ? Colors.purple30 : Colors.blue30,
+          backgroundColor: index % 2 === 0 ? Colors.primary : Colors.blue10,
         }}>
-        <Text padding-10 white>
+        <Text padding-10 white text60BO>
           {code.toString()}
         </Text>
       </Card>
@@ -25,11 +25,12 @@ const ReportView = () => {
   };
 
   useEffect(() => {
-    const userList = [];
+    let userList = [];
     const subscriber = firestore()
       .collection('Users')
+      .orderBy('timeStamp', 'desc')
       .limit(20)
-      .onSnapshot((querySnapshot) => {
+      .onSnapshot(querySnapshot => {
         if (querySnapshot) {
           querySnapshot.forEach((doc) => {
             const { code } = doc.data();
@@ -38,6 +39,7 @@ const ReportView = () => {
               key: doc.id,
             });
           });
+          setUsers(userList);
         }
         setUsers(userList);
         setLoading(false);
@@ -47,19 +49,16 @@ const ReportView = () => {
     return () => subscriber();
   }, []);
 
-  if (loading) {
-    return <ActivityIndicator />; // or a spinner
-  }
-
   return (
-    <View>
-      <View padding-10 bg-primary>
+    <View flex>
+      <View marginB-10 padding-10 bg-primary>
         <Text text60 white>
-          Danh sách bệnh nhân
+          Danh sách bệnh nhân thêm gần đây
         </Text>
       </View>
       <FlatList
         data={users}
+        extraData={users}
         keyExtractor={(_, index) => `${index}`}
         renderItem={renderItem}
         refreshing={loading}
@@ -74,8 +73,26 @@ const ReportView = () => {
           />
         )}
       />
+      {loading && (
+        <LoaderScreen
+          color={Colors.primary}
+          message="Đang tải..."
+          messageStyle={styles.paragraph}
+          overlay
+        />
+      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  paragraph: {
+    color: Colors.primary,
+    textDecorationColor: 'yellow',
+    textShadowColor: 'red',
+    textShadowRadius: 1,
+    margin: 24,
+  },
+});
 
 export default ReportView;

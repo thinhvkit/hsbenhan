@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { FlatList, ActivityIndicator } from 'react-native';
+import { FlatList, ActivityIndicator, SafeAreaView, StatusBar } from 'react-native';
 import _ from 'lodash';
 import {
   View,
@@ -13,6 +13,7 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import ImageViewing from 'react-native-image-viewing';
 import Icon from 'react-native-vector-icons/Ionicons';
+import styles from '../utils/common'
 
 const Home = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -61,7 +62,7 @@ const Home = ({ navigation }) => {
     navigation.navigate('Capture');
   };
 
-  const onChangeSearchText = (text) => {
+  const onChangeSearchText = text => {
     setSearchText(text);
   };
 
@@ -69,20 +70,17 @@ const Home = ({ navigation }) => {
     if (searchText.length > 0) {
       setIsLoading(true);
       setData([]);
-      let list = [];
 
       firestore()
         .collection('Users')
-        // Filter results
         .where('code', 'array-contains', searchText.toLowerCase())
         .get()
         .then(querySnapshot => {
           setIsLoading(false);
           querySnapshot.forEach((documentSnapshot) => {
             const d = documentSnapshot.data();
-            list = [...list, ..._.map(d.images, (i) => ({ code: d.code, uri: i }))];
+            setData(preData => [...preData, ..._.map(d.images, (uri) => ({ code: d.code, uri }))]);
           });
-          setData(list);
         }).catch((err) => {
           setIsLoading(false);
           console.log(err);
@@ -102,13 +100,14 @@ const Home = ({ navigation }) => {
   const renderEmptyContainer = () => {
     return (
       <View center>
-        <Text>Không tìm thấy bệnh nhân</Text>
+        <Text gray40>Không tìm thấy bệnh nhân</Text>
       </View>
     );
   };
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
       <View centerV paddingH-10 paddingV-10 marginB-10>
         <TextField
           key={'centered'}
@@ -155,18 +154,15 @@ const Home = ({ navigation }) => {
         </View>
       </View>
 
-      <View>
-        <FlatList
-          row
-          numColumns={2}
-          data={data}
-          keyExtractor={(_, index) => `${index}`}
-          renderItem={renderItem}
-          refreshing={isLoading}
-          onRefresh={onSearch}
-          ListEmptyComponent={renderEmptyContainer()}
-        />
-      </View>
+      <FlatList
+        row
+        numColumns={2}
+        data={data}
+        keyExtractor={(_, index) => `${index}`}
+        renderItem={renderItem}
+        refreshing={isLoading}
+        ListEmptyComponent={renderEmptyContainer()}
+      />
 
       <ImageViewing
         images={imagesViewing}
@@ -176,7 +172,7 @@ const Home = ({ navigation }) => {
         backgroundColor={Colors.grey60}
         onRequestClose={onRequestClose}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
