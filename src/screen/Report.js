@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { View, Text, Card, Colors, LoaderScreen } from 'react-native-ui-lib';
 import firestore from '@react-native-firebase/firestore';
-import colors from '../src/util/colors';
 
 const ReportView = () => {
   const [users, setUsers] = useState();
@@ -29,6 +28,7 @@ const ReportView = () => {
     let userList = [];
     const subscriber = firestore()
       .collection('Users')
+      .orderBy('timeStamp', 'desc')
       .limit(20)
       .onSnapshot(querySnapshot => {
         if (querySnapshot) {
@@ -53,7 +53,7 @@ const ReportView = () => {
     <View flex>
       <View marginB-10 padding-10 bg-primary>
         <Text text60 white>
-          Danh sách bệnh nhân
+          Danh sách bệnh nhân thêm gần đây
         </Text>
       </View>
       <FlatList
@@ -75,7 +75,7 @@ const ReportView = () => {
       />
       {loading && (
         <LoaderScreen
-          color={colors.primary}
+          color={Colors.primary}
           message="Đang tải..."
           messageStyle={styles.paragraph}
           overlay
@@ -87,7 +87,7 @@ const ReportView = () => {
 
 const styles = StyleSheet.create({
   paragraph: {
-    color: colors.primary,
+    color: Colors.primary,
     textDecorationColor: 'yellow',
     textShadowColor: 'red',
     textShadowRadius: 1,

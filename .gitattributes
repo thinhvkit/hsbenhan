@@ -1,7 +1,3 @@
 # Windows files should use crlf line endings
 # https://help.github.com/articles/dealing-with-line-endings/
-<<<<<<< HEAD
 *.bat text eol=crlf
-=======
-*.bat text eol=crlf
->>>>>>> d6be8cc (upgrade react-native)

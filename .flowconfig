@@ -64,8 +64,4 @@ untyped-import
 untyped-type-import
 
 [version]
-<<<<<<< HEAD
-^0.137.0
-=======
 ^0.158.0
->>>>>>> d6be8cc (upgrade react-native)
